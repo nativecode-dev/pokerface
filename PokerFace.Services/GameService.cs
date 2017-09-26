@@ -1,10 +1,7 @@
 ﻿namespace PokerFace.Services
 {
     using System;
-<<<<<<< HEAD
     using System.Collections.Generic;
-=======
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -45,7 +42,6 @@
             return Task.CompletedTask;
         }
 
-<<<<<<< HEAD
         public async Task<IEnumerable<PlayerHandModel>> GetHandsAsync(Guid gameId, short round)
         {
             var query = from game in this.context.Games
@@ -70,8 +66,6 @@
                 .ConfigureAwait(true);
         }
 
-        public async Task<PlayerModel> JoinedAsync(Guid gameId, string name)
-=======
         public async Task<GameModel> NewGameAsync()
         {
             var name = this.names.GetRandomName();
@@ -115,8 +109,7 @@
             await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
         }
 
-        public async Task<PlayerModel> PlayerJoinedAsync(Guid gameId, string name)
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
+        public async Task<PlayerModel> JoinedAsync(Guid gameId, string name)
         {
             var game = this.context.Games.Find(gameId);
 
@@ -138,11 +131,7 @@
             return this.mapping.Map<PlayerModel>(player);
         }
 
-<<<<<<< HEAD
         public async Task LeaveAsync(Guid gameId, Guid playerId)
-=======
-        public async Task PlayerLeftAsync(Guid gameId, Guid playerId)
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
         {
             var game = await this.context.Games
                 .Include(g => g.Players)
@@ -155,27 +144,6 @@
             await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
         }
 
-<<<<<<< HEAD
-        public async Task<GameModel> NewGameAsync()
-        {
-            var name = this.names.GetRandomName();
-
-            var game = new Game
-            {
-                Name = name,
-                State = GameState.Running,
-                ShortIdentifier = this.names.GetRandomNameDashed(name)
-            };
-
-            this.context.Games.Add(game);
-
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
-
-            return this.mapping.Map<GameModel>(game);
-        }
-
-=======
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
         public async Task<RoundModel> NewRoundAsync(Guid gameId)
         {
             var game = await this.context.Games
@@ -187,11 +155,7 @@
             var round = new Round
             {
                 GameId = gameId,
-<<<<<<< HEAD
-                Number = (short)(game.Rounds.Count + 1)
-=======
                 Number = (short) (game.Rounds.Count + 1)
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
             };
 
             game.Rounds.Add(round);
@@ -201,34 +165,6 @@
             return this.mapping.Map<RoundModel>(round);
         }
 
-<<<<<<< HEAD
-        public async Task PlayHandAsync(Guid gameId, Guid playerId, short value)
-        {
-            var query = from game in this.context.Games
-                where game.Id == gameId && game.State == GameState.Running
-                from round in game.Rounds
-                orderby round.Number descending
-                select round;
-
-            var current = await query
-                .Include(r => r.Hands)
-                .SingleAsync()
-                .ConfigureAwait(true);
-
-            var hand = current.Hands.SingleOrDefault(h => h.PlayerId == playerId && h.RoundId == current.Id);
-
-            if (hand == null)
-            {
-                hand = new PlayerHand {PlayerId = playerId, RoundId = current.Id};
-            }
-
-            hand.StoryPoints = value;
-
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
-        }
-
-=======
->>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
         protected override void ReleaseManaged()
         {
             this.context.Dispose();
