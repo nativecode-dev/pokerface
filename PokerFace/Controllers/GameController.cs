@@ -1,7 +1,10 @@
 ﻿namespace PokerFace.Controllers
 {
     using System;
+<<<<<<< HEAD
     using System.Collections.Generic;
+=======
+>>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Models.Poker;
@@ -30,6 +33,7 @@
         }
 
         [HttpPost("{gameId}/join/{name}")]
+<<<<<<< HEAD
         public Task<PlayerModel> JoinGame(Guid gameId, string name)
         {
             return this.game.JoinedAsync(gameId, name);
@@ -57,6 +61,23 @@
         public Task LeaveGame(Guid gameId, Guid playerId)
         {
             return this.game.LeaveAsync(gameId, playerId);
+=======
+        public Task JoinGame(Guid gameId, string name)
+        {
+            return this.game.PlayerJoinedAsync(gameId, name);
+        }
+
+        [HttpDelete("{gameId}/players/{playerId}")]
+        public Task LeaveGame(Guid gameId, Guid playerId)
+        {
+            return this.game.PlayerLeftAsync(gameId, playerId);
+        }
+
+        [HttpPost("{gameId}")]
+        public Task PlayHand([FromBody] PlayerHandModel model)
+        {
+            return this.game.PlayHandAsync(model.GameId, model.PlayerId, model.StoryPoints);
+>>>>>>> f3c3e01f465a7a0dbb03544a69e9bf85bba7524f
         }
 
         [HttpPost("{gameId}/new-round")]
