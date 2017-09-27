@@ -1,4 +1,4 @@
-﻿namespace PokerFace.Services.Requests
+﻿namespace PokerFace.Web.WebSockets.Requests
 {
     using System;
     using MediatR;

@@ -1,10 +1,9 @@
-﻿namespace PokerFace.Services.Requests
+﻿namespace PokerFace.Web.WebSockets.Requests
 {
     using System;
     using MediatR;
-    using Models.Poker;
 
-    public class PlayHand : IRequest<PlayerHandModel>
+    public class LeaveGame : IRequest
     {
         public Guid GameId { get; set; }
 

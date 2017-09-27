@@ -1,15 +1,16 @@
 ﻿namespace PokerFace.Web.WebSockets
 {
+    using System.ComponentModel;
     using System.Runtime.Serialization;
-    using MediatR;
 
     [DataContract]
-    public class WebSocketResponse : IRequest
+    public class WebSocketResponse
     {
         [DataMember]
         public object Data { get; set; }
 
         [DataMember]
+        [DefaultValue(WebSocketResponseType.Default)]
         public WebSocketResponseType Type { get; set; }
     }
 

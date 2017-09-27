@@ -11,15 +11,14 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebSockets.Server" Version="0.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PokerFace.Core\PokerFace.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Requests\" />
+    <ProjectReference Include="..\PokerFace.Models\PokerFace.Models.csproj" />
+    <ProjectReference Include="..\PokerFace.Services\PokerFace.Services.csproj" />
   </ItemGroup>
 
 </Project>

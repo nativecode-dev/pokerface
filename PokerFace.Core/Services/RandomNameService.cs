@@ -16,12 +16,14 @@
 
         public string GetRandomNameDashed(string name = default(string))
         {
-            return (name ?? this.GetRandomName()).Dasherize();
+            var original = name ?? this.GetRandomName();
+            return original.Underscore().Dasherize();
         }
 
         public string GetRandomNameUnderscored(string name = default(string))
         {
-            return (name ?? this.GetRandomName()).Underscore();
+            var original = name ?? this.GetRandomName();
+            return original.Underscore();
         }
 
         private static string GetRandomString(IReadOnlyList<string> values)
