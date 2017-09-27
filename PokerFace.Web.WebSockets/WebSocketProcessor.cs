@@ -2,14 +2,14 @@
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Linq;
     using System.Net.WebSockets;
     using System.Threading;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Core.Extensions;
     using Extensions;
     using MediatR;
-    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -18,79 +18,72 @@
         private static readonly ConcurrentDictionary<Guid, WebSocket> Sockets =
             new ConcurrentDictionary<Guid, WebSocket>();
 
-        private readonly IMapper mapper;
+        private readonly ILogger logger;
 
         private readonly IMediator mediator;
 
-        public WebSocketProcessor(IMapper mapper, IMediator mediator)
+        public WebSocketProcessor(ILoggerFactory factory, IMediator mediator)
         {
-            this.mapper = mapper;
+            this.logger = factory.CreateLogger<WebSocketProcessor>();
             this.mediator = mediator;
         }
 
-        public Task StartAsync(HttpContext context, CancellationToken token = default(CancellationToken))
+        public async Task StartAsync(WebSocket socket, CancellationToken token = default(CancellationToken))
         {
-            if (context.WebSockets.IsWebSocketRequest == false)
+            var key = Guid.NewGuid();
+
+            if (WebSocketProcessor.Sockets.TryAdd(key, socket))
             {
-                return Task.CompletedTask;
-            }
-
-            var path = context.Request.Path;
-
-            if (path.HasValue && path.Value.ToLower() == "/ws")
-            {
-                return this.RunAsync(context.WebSockets.AcceptWebSocketAsync(), token);
-            }
-
-            return Task.CompletedTask;
-        }
-
-        private async Task RunAsync(Task<WebSocket> task, CancellationToken token)
-        {
-            using (var socket = await task.NoCapture())
-            {
-                if (WebSocketProcessor.Sockets.TryAdd(Guid.NewGuid(), socket))
+                while (token.IsCancellationRequested == false && socket.State == WebSocketState.Open)
                 {
-                    while (token.IsCancellationRequested == false && socket.State == WebSocketState.Open)
+                    try
                     {
-                        await this.MessageLoopAsync(token, socket).NoCapture();
+                        await this.MessageLoopAsync(socket, token).NoCapture();
                     }
+                    catch (Exception ex)
+                    {
+                        this.logger.LogError(ex.Message, ex.StackTrace);
+                    }
+                }
+
+                if (WebSocketProcessor.Sockets.TryRemove(key, out var _) == false)
+                {
+                    throw new InvalidOperationException("Failed to remove socket.");
                 }
             }
         }
 
-        private async Task MessageLoopAsync(CancellationToken token, WebSocket socket)
+        private async Task MessageLoopAsync(WebSocket socket, CancellationToken token)
         {
-            var message = await socket.GetNextTextAsync(token).NoCapture();
+            var request = await socket.GetNextAsync<WebSocketRequest<JObject>>(token).NoCapture();
 
-            if (string.IsNullOrWhiteSpace(message))
+            if (request == null)
             {
                 return;
             }
-
-            var jobject = JObject.Parse(message);
-            var request = new WebSocketRequest<JObject> {Data = jobject};
 
             var json = await this.mediator
                 .Send<JObject>(request, token)
                 .NoCapture();
 
-            var response = this.mapper.Map<WebSocketResponse>(json);
+            // TODO: AutoMapper doesn't seem to map the enum correctly.
+            var response = JsonConvert.DeserializeObject<WebSocketResponse>(json.ToString());
 
             if (response == null || response.Type == WebSocketResponseType.Ignore)
             {
                 return;
             }
 
-            var text = JsonConvert.SerializeObject(response);
-
             if (response.Type == WebSocketResponseType.Broadcast)
             {
-                await Task.WhenAll(WebSocketProcessor.Sockets.Values.BroadcastText(text, token)).NoCapture();
+                var sockets = WebSocketProcessor.Sockets.Values
+                    .Where(v => v != socket && v.State == WebSocketState.Open);
+
+                await Task.WhenAll(sockets.Broadcast(response, token)).NoCapture();
             }
-            else if (response.Type == WebSocketResponseType.Reply)
+            else
             {
-                await socket.SendTextAsync(text, token).NoCapture();
+                await socket.SendAsync(response, token).NoCapture();
             }
         }
     }

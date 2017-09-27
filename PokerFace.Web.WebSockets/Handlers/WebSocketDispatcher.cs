@@ -1,36 +1,19 @@
 ﻿namespace PokerFace.Web.WebSockets.Handlers
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using AutoMapper;
+    using Core.Extensions;
     using MediatR;
-    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json.Linq;
 
-    public class WebSocketDispatcher : ICancellableAsyncRequestHandler<WebSocketRequest<JObject>>
+    public class WebSocketDispatcher : ICancellableAsyncRequestHandler<WebSocketRequest<JObject>, JObject>
     {
-        private readonly IMapper mapper;
-
-        private readonly IMediator mediator;
-
-        private readonly IServiceScope scope;
-
-        public WebSocketDispatcher(IMapper mapper, IMediator mediator, IServiceScopeFactory scopes)
+        public Task<JObject> Handle(WebSocketRequest<JObject> message, CancellationToken cancellationToken)
         {
-            this.mapper = mapper;
-            this.mediator = mediator;
-            this.scope = scopes.CreateScope();
-        }
+            var response = new WebSocketResponse {Type = WebSocketResponseType.Reply};
+            var jobject = response.ToJObject();
 
-        public Task Handle(WebSocketRequest<JObject> message, CancellationToken token)
-        {
-            var type = Type.GetType(message.TypeName);
-            var instance = (IRequest) this.scope.ServiceProvider.GetService(type);
-
-            this.mapper.Map(message.Typed, instance);
-
-            return this.mediator.Send(instance, token);
+            return Task.FromResult(jobject);
         }
     }
 }
