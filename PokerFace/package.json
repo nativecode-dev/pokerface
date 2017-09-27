@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "pokerface",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "babel-loader": "^7.1.2",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2"
+  }
+}

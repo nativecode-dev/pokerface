@@ -14,8 +14,8 @@
 
         public virtual ICollection<Round> Rounds { get; set; } = new List<Round>();
 
-        [StringLength(CommonLengths.ShortIdentifier)]
-        public string ShortIdentifier { get; set; }
+        [StringLength(CommonLengths.Identifier)]
+        public string Slug { get; set; }
 
         public GameState State { get; set; }
     }

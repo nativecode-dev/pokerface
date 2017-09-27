@@ -1,6 +1,7 @@
 ﻿namespace PokerFace
 {
     using System.Threading.Tasks;
+    using Core.Extensions;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Services.Data;
@@ -18,9 +19,9 @@
                 .UseStartup<ProgramStartup>()
                 .Build();
 
-            await PokerFaceDataContext.InitializeAsync(host.Services).ConfigureAwait(true);
+            await PokerFaceDataContext.InitializeAsync(host.Services).Capture();
 
-            await host.RunAsync().ConfigureAwait(false);
+            await host.RunAsync().NoCapture();
         }
     }
 }

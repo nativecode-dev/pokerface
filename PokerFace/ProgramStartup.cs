@@ -1,13 +1,14 @@
 ﻿namespace PokerFace
 {
     using System;
+    using AutoMapper;
     using Core.Services;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Middleware;
     using Services.Extensions;
+    using Web.WebSockets.Extensions;
 
     public class ProgramStartup
     {
@@ -21,22 +22,21 @@
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             return services
+                .AddAutoMapper()
                 .AddTransient<IRandomNameService, RandomNameService>()
-                .AddPokerFaceData(this.configuration)
+                .AddPokerFaceServices(this.configuration)
+                .AddPokerFaceWebSockets()
                 .AddMvc()
-                .Services.BuildServiceProvider();
+                .Services
+                .BuildServiceProvider();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseMiddleware<WebSocketMiddleware>();
+            app.UseDefaultFiles();
             app.UseMvcWithDefaultRoute();
-            app.UseWebSockets();
+            app.UsePokerFaceWebSockets();
+            app.UseStaticFiles();
         }
     }
 }

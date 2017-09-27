@@ -6,10 +6,12 @@
     using System.Threading;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Core.Extensions;
     using Core.Reliability;
     using Core.Services;
     using Data;
     using Data.Poker;
+    using Exceptions;
     using Microsoft.EntityFrameworkCore;
     using Models.Poker;
 
@@ -28,21 +30,28 @@
             this.names = names;
         }
 
-        public Task CompleteGameAsync(Guid gameId)
+        public async Task<CompletedGameModel> CompleteGameAsync(Guid gameId, CancellationToken token)
         {
-            var game = this.context.Games.Find(gameId);
+            var game = await this.context.Games
+                .Include(g => g.Players)
+                .Include(g => g.Rounds)
+                .Where(g => g.Id == gameId && g.State == GameState.Running)
+                .OrderBy(g => g.Rounds.Select(r => r.Number))
+                .SingleAsync(token)
+                .Capture();
 
             if (game != null)
             {
                 game.State = GameState.Completed;
+                await this.context.SaveChangesAsync(token).Capture();
 
-                return this.context.SaveChangesAsync(CancellationToken.None);
+                return this.mapping.Map<CompletedGameModel>(game);
             }
 
-            return Task.CompletedTask;
+            throw EntityNotFoundException.Throw(gameId.ToString());
         }
 
-        public async Task<IEnumerable<PlayerHandModel>> GetHandsAsync(Guid gameId, short round)
+        public async Task<IEnumerable<PlayerHandModel>> GetHandsAsync(Guid gameId, short round, CancellationToken token)
         {
             var query = from game in this.context.Games
                 where game.Id == gameId && game.State == GameState.Running
@@ -51,10 +60,12 @@
                 from hand in r.Hands
                 select this.mapping.Map<PlayerHandModel>(hand);
 
-            return await query.ToListAsync().ConfigureAwait(true);
+            return await query
+                .ToListAsync(token)
+                .Capture();
         }
 
-        public async Task<IEnumerable<PlayerModel>> GetPlayersAsync(Guid gameId)
+        public async Task<IEnumerable<PlayerModel>> GetPlayersAsync(Guid gameId, CancellationToken token)
         {
             var query = from game in this.context.Games
                 where game.Id == gameId && game.State == GameState.Running
@@ -62,29 +73,45 @@
                 select this.mapping.Map<PlayerModel>(player);
 
             return await query
-                .ToListAsync()
-                .ConfigureAwait(true);
+                .ToListAsync(token)
+                .Capture();
         }
 
-        public async Task<GameModel> NewGameAsync()
+        public async Task<IEnumerable<RoundModel>> GetRoundsAsync(Guid gameId, CancellationToken token)
         {
-            var name = this.names.GetRandomName();
+            var query = from game in this.context.Games
+                where game.Id == gameId && game.State == GameState.Running
+                from round in game.Rounds
+                orderby round.Number descending
+                select this.mapping.Map<RoundModel>(round);
+
+            return await query
+                .ToListAsync(token)
+                .Capture();
+        }
+
+        public async Task<GameModel> NewGameAsync(string name, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = this.names.GetRandomName();
+            }
 
             var game = new Game
             {
                 Name = name,
                 State = GameState.Running,
-                ShortIdentifier = this.names.GetRandomNameDashed(name)
+                Slug = this.names.GetRandomNameDashed(name)
             };
 
             this.context.Games.Add(game);
 
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
+            await this.context.SaveChangesAsync(token).Capture();
 
             return this.mapping.Map<GameModel>(game);
         }
 
-        public async Task PlayHandAsync(Guid gameId, Guid playerId, short value)
+        public async Task PlayHandAsync(Guid gameId, Guid playerId, short value, CancellationToken token)
         {
             var query = from game in this.context.Games
                 where game.Id == gameId && game.State == GameState.Running
@@ -94,8 +121,8 @@
 
             var current = await query
                 .Include(r => r.Hands)
-                .SingleAsync()
-                .ConfigureAwait(true);
+                .SingleAsync(token)
+                .Capture();
 
             var hand = current.Hands.SingleOrDefault(h => h.PlayerId == playerId && h.RoundId == current.Id);
 
@@ -106,10 +133,10 @@
 
             hand.StoryPoints = value;
 
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
+            await this.context.SaveChangesAsync(token).Capture();
         }
 
-        public async Task<PlayerModel> JoinedAsync(Guid gameId, string name)
+        public async Task<PlayerModel> JoinedAsync(Guid gameId, string name, CancellationToken token)
         {
             var game = this.context.Games.Find(gameId);
 
@@ -126,31 +153,33 @@
 
             game.Players.Add(player);
 
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
+            await this.context.SaveChangesAsync(token).Capture();
 
             return this.mapping.Map<PlayerModel>(player);
         }
 
-        public async Task LeaveAsync(Guid gameId, Guid playerId)
+        public async Task LeaveAsync(Guid gameId, Guid playerId, CancellationToken token)
         {
             var game = await this.context.Games
                 .Include(g => g.Players)
-                .SingleAsync(g => g.Id == gameId)
-                .ConfigureAwait(true);
+                .SingleAsync(g => g.Id == gameId, token)
+                .Capture();
 
             var player = game.Players.Single(p => p.Id == playerId);
             game.Players.Remove(player);
 
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
+            await this.context
+                .SaveChangesAsync(token)
+                .Capture();
         }
 
-        public async Task<RoundModel> NewRoundAsync(Guid gameId)
+        public async Task<RoundModel> NewRoundAsync(Guid gameId, CancellationToken token)
         {
             var game = await this.context.Games
                 .Include(g => g.Rounds)
                 .OrderBy(g => g.Rounds.Select(r => r.Number))
-                .SingleAsync(g => g.Id == gameId && g.State == GameState.Running)
-                .ConfigureAwait(true);
+                .SingleAsync(g => g.Id == gameId && g.State == GameState.Running, token)
+                .Capture();
 
             var round = new Round
             {
@@ -160,7 +189,9 @@
 
             game.Rounds.Add(round);
 
-            await this.context.SaveChangesAsync(CancellationToken.None).ConfigureAwait(true);
+            await this.context
+                .SaveChangesAsync(token)
+                .Capture();
 
             return this.mapping.Map<RoundModel>(round);
         }

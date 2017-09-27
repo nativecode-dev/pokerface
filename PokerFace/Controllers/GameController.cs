@@ -8,7 +8,7 @@
     using Services;
 
     [Route("games")]
-    public class GameController : Controller
+    public class GameController : ControllerBase
     {
         private readonly IGameService game;
 
@@ -29,19 +29,37 @@
             return this.game.NewGameAsync();
         }
 
-        [HttpPost("{gameId}/join/{name}")]
-        public Task<PlayerModel> JoinGame(Guid gameId, string name)
+        [HttpDelete("{gameId}")]
+        public Task CompleteGame(Guid gameId)
         {
-            return this.game.JoinedAsync(gameId, name);
+            return this.game.CompleteGameAsync(gameId);
         }
 
         [HttpPost("{gameId}")]
-        public Task PlayHand([FromBody] PlayerHandModel model)
+        public Task Play([FromBody] PlayerHandModel model)
         {
             return this.game.PlayHandAsync(model.GameId, model.PlayerId, model.StoryPoints);
         }
 
-        [HttpGet("{gameId}/rounds/{round}/hands")]
+        [HttpPost("{gameId}/join/{name}")]
+        public Task<PlayerModel> Join(Guid gameId, string name)
+        {
+            return this.game.JoinedAsync(gameId, name);
+        }
+
+        [HttpPost("{gameId}/new-round")]
+        public Task NewRound(Guid gameId)
+        {
+            return this.game.NewRoundAsync(gameId);
+        }
+
+        [HttpGet("{gameId}/rounds")]
+        public Task<IEnumerable<RoundModel>> GetRounds(Guid gameId)
+        {
+            return this.game.GetRoundsAsync(gameId);
+        }
+
+        [HttpGet("{gameId}/rounds/{round}")]
         public Task<IEnumerable<PlayerHandModel>> GetHands(Guid gameId, short round)
         {
             return this.game.GetHandsAsync(gameId, round);
@@ -54,21 +72,9 @@
         }
 
         [HttpDelete("{gameId}/players/{playerId}")]
-        public Task LeaveGame(Guid gameId, Guid playerId)
+        public Task Leave(Guid gameId, Guid playerId)
         {
             return this.game.LeaveAsync(gameId, playerId);
-        }
-
-        [HttpPost("{gameId}/new-round")]
-        public Task NewRound(Guid gameId)
-        {
-            return this.game.NewRoundAsync(gameId);
-        }
-
-        [HttpDelete("{gameId}")]
-        public Task CompleteGame(Guid gameId)
-        {
-            return this.game.CompleteGameAsync(gameId);
         }
     }
 }

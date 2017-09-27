@@ -3,6 +3,7 @@ namespace PokerFace.Models.Poker
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Runtime.Serialization;
+    using Core;
 
     [DataContract]
     public class GameModel : Model
@@ -13,5 +14,9 @@ namespace PokerFace.Models.Poker
 
         [DataMember]
         public Uri Link { get; set; }
+
+        [DataMember]
+        [StringLength(CommonLengths.ShortText)]
+        public string Name { get; set; }
     }
 }

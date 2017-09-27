@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Core.Extensions;
     using Extensions;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@
             {
                 if (context.HasMigrations())
                 {
-                    await context.Database.MigrateAsync().ConfigureAwait(true);
+                    await context.Database.MigrateAsync().Capture();
                 }
             }
         }

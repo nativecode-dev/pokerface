@@ -7,7 +7,7 @@
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddPokerFaceData(this IServiceCollection services,
+        public static IServiceCollection AddPokerFaceServices(this IServiceCollection services,
             IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString(nameof(PokerFaceDataContext));
