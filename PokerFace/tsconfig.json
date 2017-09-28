@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "outDir": "wwwroot/app",
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es2015"
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ],
+  "include": [
+    "Scripts/**/*.ts"
+  ]
+}

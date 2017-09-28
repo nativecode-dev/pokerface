@@ -13,6 +13,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokerFace.Web.WebSockets", "PokerFace.Web.WebSockets\PokerFace.Web.WebSockets.csproj", "{85285E31-A435-433D-9FDE-40C56E2B0E74}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{366BC9C8-9BBF-4B38-A378-F44120738B8C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

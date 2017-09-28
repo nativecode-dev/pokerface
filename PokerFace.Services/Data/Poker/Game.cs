@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Core;
+    using Models.Poker;
 
     public class Game : Entity<Guid>
     {

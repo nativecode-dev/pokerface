@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.0.1" />
+    <PackageReference Include="Humanizer.Core" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
@@ -23,6 +24,54 @@
     <ProjectReference Include="..\PokerFace.Services\PokerFace.Services.csproj" />
     <ProjectReference Include="..\PokerFace.Models\PokerFace.Models.csproj" />
     <ProjectReference Include="..\PokerFace.Web.WebSockets\PokerFace.Web.WebSockets.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Scripts\generated\commands\CompleteGame.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\CompleteGame.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\commands\JoinGame.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\JoinGame.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\commands\LeaveGame.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\LeaveGame.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\commands\NewGame.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\NewGame.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\commands\NewRound.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\NewRound.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\commands\PlayHand.d.ts">
+      <CustomToolNamespace>..\PokerFace.Web.WebSockets\Requests\PlayHand.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\endpoints\Game.ts">
+      <CustomToolNamespace>Controllers\GameController.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\endpoints\Home.ts">
+      <CustomToolNamespace>Controllers\HomeController.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\enums\GameState.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\GameState.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\CompletedGameModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\CompletedGameModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\CompletedRoundModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\CompletedRoundModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\GameModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\GameModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\PlayerHandModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\PlayerHandModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\PlayerModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\PlayerModel.cs</CustomToolNamespace>
+    </None>
+    <None Update="Scripts\generated\models\RoundModel.d.ts">
+      <CustomToolNamespace>..\PokerFace.Models\Poker\RoundModel.cs</CustomToolNamespace>
+    </None>
   </ItemGroup>
 
 </Project>

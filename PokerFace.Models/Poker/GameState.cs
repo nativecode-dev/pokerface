@@ -1,4 +1,4 @@
-﻿namespace PokerFace.Services.Data.Poker
+﻿namespace PokerFace.Models.Poker
 {
     public enum GameState
     {

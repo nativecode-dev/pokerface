@@ -12,10 +12,11 @@
         {
             var connectionString = configuration.GetConnectionString(nameof(PokerFaceDataContext));
 
+            services.AddTransient<IGameService, GameService>();
+
             return services
                 .AddDbContext<PokerFaceDataContext>(options => options.UseMySql(connectionString))
-                .AddEntityFrameworkMySql()
-                .AddTransient<IGameService, GameService>();
+                .AddEntityFrameworkMySql();
         }
     }
 }
