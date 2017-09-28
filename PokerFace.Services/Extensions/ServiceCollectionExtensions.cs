@@ -1,7 +1,6 @@
 ﻿namespace PokerFace.Services.Extensions
 {
     using Data;
-    using MediatR;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +11,6 @@
             IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString(nameof(PokerFaceDataContext));
-
-            services.AddMediatR(typeof(ServiceCollectionExtensions).Assembly);
 
             return services
                 .AddDbContext<PokerFaceDataContext>(options => options.UseMySql(connectionString))

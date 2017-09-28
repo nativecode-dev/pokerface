@@ -58,18 +58,6 @@
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        public static async Task<T> GetNextAsync<T>(this WebSocket socket, CancellationToken token)
-        {
-            var json = await socket.GetNextTextAsync(token).NoCapture();
-
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                return default(T);
-            }
-
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
         public static async Task<string> GetNextTextAsync(this WebSocket socket, CancellationToken token)
         {
             var buffer = new ArraySegment<byte>(new byte[8192]);
