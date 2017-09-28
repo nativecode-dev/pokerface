@@ -44,7 +44,7 @@ export class Game {
      */
     public completeGame(gameId: string): Promise<void> {
         // HttpDelete={gameId}
-        const url = `${gameId}`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}`);
         console.log('completeGame', url);
         return Promise.resolve(null);
     }
@@ -56,7 +56,7 @@ export class Game {
      */
     public play(model: IPlayerHandModel): Promise<void> {
         // HttpPost={gameId}
-        const url = `${gameId}`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/{gameId}`);
         console.log('play', url);
         return Promise.resolve(null);
     }
@@ -69,7 +69,7 @@ export class Game {
      */
     public join(gameId: string, name: string): Promise<IPlayerModel> {
         // HttpPost={gameId}/join/{name}
-        const url = `${gameId}/join/${name}`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/join/${name}`);
         console.log('join', url);
         return Promise.resolve(null);
     }
@@ -81,7 +81,7 @@ export class Game {
      */
     public newRound(gameId: string): Promise<void> {
         // HttpPost={gameId}/new-round
-        const url = `${gameId}/new-round`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/new-round`);
         console.log('newRound', url);
         return Promise.resolve(null);
     }
@@ -93,7 +93,7 @@ export class Game {
      */
     public getRounds(gameId: string): Promise<IRoundModel[]> {
         // HttpGet={gameId}/rounds
-        const url = `${gameId}/rounds`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/rounds`);
         console.log('getRounds', url);
         return Promise.resolve(null);
     }
@@ -106,7 +106,7 @@ export class Game {
      */
     public getHands(gameId: string, round: number): Promise<IPlayerHandModel[]> {
         // HttpGet={gameId}/rounds/{round}
-        const url = `${gameId}/rounds/${round}`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/rounds/${round}`);
         console.log('getHands', url);
         return Promise.resolve(null);
     }
@@ -118,7 +118,7 @@ export class Game {
      */
     public getPlayers(gameId: string): Promise<IPlayerModel[]> {
         // HttpGet={gameId}/players
-        const url = `${gameId}/players`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/players`);
         console.log('getPlayers', url);
         return Promise.resolve(null);
     }
@@ -131,7 +131,7 @@ export class Game {
      */
     public leave(gameId: string, playerId: string): Promise<void> {
         // HttpDelete={gameId}/players/{playerId}
-        const url = `${gameId}/players/${playerId}`;
+        const url = new URL(this.baseUrl.toString(), `/${Game.resourceName}/${gameId}/players/${playerId}`);
         console.log('leave', url);
         return Promise.resolve(null);
     }

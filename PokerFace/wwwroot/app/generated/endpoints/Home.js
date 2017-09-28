@@ -6,8 +6,8 @@ export class Home {
         this.baseUrl = new URL(Home.resourceName, baseUrl.toString());
     }
     /**
-     * Index
-     
+     *  Index
+     *  @return {string}
      */
     index() {
         // HttpGet=

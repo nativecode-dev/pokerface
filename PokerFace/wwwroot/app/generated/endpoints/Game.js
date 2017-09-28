@@ -6,8 +6,8 @@ export class Game {
         this.baseUrl = new URL(Game.resourceName, baseUrl.toString());
     }
     /**
-     * Get
-     
+     *  Get
+     *  @return {void}
      */
     get() {
         // HttpGet=
@@ -16,8 +16,8 @@ export class Game {
         return Promise.resolve(null);
     }
     /**
-     * NewGame
-     
+     *  NewGame
+     *  @return {IGameModel}
      */
     newGame() {
         // HttpPost=
@@ -26,18 +26,20 @@ export class Game {
         return Promise.resolve(null);
     }
     /**
-     * CompleteGame
-     * gameId
+     *  CompleteGame
+     *  @param gameId {string}
+     *  @return {void}
      */
     completeGame(gameId) {
         // HttpDelete={gameId}
-        const url = '{gameId}'.replace('{gameId}', gameId);
+        const url = '${gameId}';
         console.log('completeGame', url);
         return Promise.resolve(null);
     }
     /**
-     * Play
-     * model
+     *  Play
+     *  @param model {PlayerHandModel}
+     *  @return {void}
      */
     play(model) {
         // HttpPost={gameId}
@@ -46,62 +48,71 @@ export class Game {
         return Promise.resolve(null);
     }
     /**
-     * Join
-     * gameId* name
+     *  Join
+     *  @param gameId {string}
+     *  @param name {string}
+     *  @return {IPlayerModel}
      */
     join(gameId, name) {
         // HttpPost={gameId}/join/{name}
-        const url = '{gameId}/join/{name}'.replace('{gameId}', gameId).replace('{name}', name);
+        const url = '${gameId}/join/${name}';
         console.log('join', url);
         return Promise.resolve(null);
     }
     /**
-     * NewRound
-     * gameId
+     *  NewRound
+     *  @param gameId {string}
+     *  @return {void}
      */
     newRound(gameId) {
         // HttpPost={gameId}/new-round
-        const url = '{gameId}/new-round'.replace('{gameId}', gameId);
+        const url = '${gameId}/new-round';
         console.log('newRound', url);
         return Promise.resolve(null);
     }
     /**
-     * GetRounds
-     * gameId
+     *  GetRounds
+     *  @param gameId {string}
+     *  @return {IRoundModel[]}
      */
     getRounds(gameId) {
         // HttpGet={gameId}/rounds
-        const url = '{gameId}/rounds'.replace('{gameId}', gameId);
+        const url = '${gameId}/rounds';
         console.log('getRounds', url);
         return Promise.resolve(null);
     }
     /**
-     * GetHands
-     * gameId* round
+     *  GetHands
+     *  @param gameId {string}
+     *  @param round {number}
+     *  @return {IPlayerHandModel[]}
      */
     getHands(gameId, round) {
         // HttpGet={gameId}/rounds/{round}
-        const url = '{gameId}/rounds/{round}'.replace('{gameId}', gameId).replace('{round}', round.toString());
+        const url = '${gameId}/rounds/${round}';
         console.log('getHands', url);
         return Promise.resolve(null);
     }
     /**
-     * GetPlayers
-     * gameId
+     *  GetPlayers
+     *  @param gameId {string}
+     *  @return {IPlayerModel[]}
      */
     getPlayers(gameId) {
         // HttpGet={gameId}/players
-        const url = '{gameId}/players'.replace('{gameId}', gameId);
+        const url = '${gameId}/players';
         console.log('getPlayers', url);
         return Promise.resolve(null);
     }
     /**
-     * Leave
-     * gameId* playerId
+     *  Leave
+     *  @param gameId {string}
+     *  @param playerId {string}
+     *  @return {void}
      */
     leave(gameId, playerId) {
         // HttpDelete={gameId}/players/{playerId}
-        const url = '{gameId}/players/{playerId}'.replace('{gameId}', gameId).replace('{playerId}', playerId);
+        const url = '${gameId}/players/${playerId}';
         console.log('leave', url);
         return Promise.resolve(null);
     }

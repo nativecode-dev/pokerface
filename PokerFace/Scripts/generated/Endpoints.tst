@@ -103,15 +103,28 @@
 
     string SetResourceUrl(Method method)
     {
+        var statements = new List<string>();
         var route = GetRoute(method.Attributes);
 
         if (route != null)
         {
-            var name = route.Value.Replace("{", "${");
-            var result = $"const url = `{name}`";
-            return result + ";";
+            var path = route.Value;
+            foreach (var parameter in method.Parameters)
+            {
+                if (route.Value.Contains(parameter.name))
+                {
+                    var original = $"{{{parameter.Name}}}";
+                    var replacement = $"${{{parameter.Name}}}";
+                    path = path.Replace(original, replacement);
+                }
+            }
+            statements.Add($"const url = new URL(this.baseUrl.toString(), `/${{{ClassName((Class)method.Parent)}.resourceName}}/{path}`);");
         }
-        return "const url = this.baseUrl;";
+        else
+        {
+            statements.Add("const url = this.baseUrl;");
+        }
+        return string.Join(Environment.NewLine, statements);
     }
 }$Classes(PokerFace.Controllers.*)[$Import
 
