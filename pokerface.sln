@@ -10,7 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokerFace.Services", "Poker
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokerFace.Models", "PokerFace.Models\PokerFace.Models.csproj", "{410670B5-7D6D-47A6-99E4-0217323143BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokerFace.Web.WebSockets", "PokerFace.Web.WebSockets\PokerFace.Web.WebSockets.csproj", "{85285E31-A435-433D-9FDE-40C56E2B0E74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokerFace.Web.WebSockets", "PokerFace.Web.WebSockets\PokerFace.Web.WebSockets.csproj", "{85285E31-A435-433D-9FDE-40C56E2B0E74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{366BC9C8-9BBF-4B38-A378-F44120738B8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
